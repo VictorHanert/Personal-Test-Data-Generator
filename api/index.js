@@ -45,7 +45,7 @@ app.get("/cpr-name-gender-dob", (_req, res) => {
 // GET /address
 app.get("/address", async (_req, res) => {
   try {
-    res.json(await getAddress());
+    res.json(await FakeInfo.getAddress());
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
@@ -53,7 +53,7 @@ app.get("/address", async (_req, res) => {
 
 // GET /phone
 app.get("/phone", (_req, res) => {
-  res.json({ phoneNumber: getPhoneNumber() });
+  res.json({ phoneNumber: FakeInfo.getPhoneNumber() });
 });
 
 // GET /person and /person?n=#
@@ -61,9 +61,9 @@ app.get("/person", async (req, res) => {
   try {
     const n = req.query.n;
     if (n) {
-      return res.json(await getFakePersons(n));
+      return res.json(await FakeInfo.getFakePersons(n));
     }
-    return res.json(await getFakePerson());
+    return res.json(await FakeInfo.getFakePerson());
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
