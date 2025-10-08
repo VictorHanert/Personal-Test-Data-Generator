@@ -1,0 +1,22 @@
+services:
+  client:
+    image: nginx:stable
+    ports:
+      - "8080:80"
+    volumes:
+      - ./client:/usr/share/nginx/html:ro
+    networks:
+      - app-network
+
+  api:
+    build: ./api
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    volumes:
+      - ./api:/app
+    command: node index.js
+
+networks:
+  app-network:
