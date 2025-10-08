@@ -1,7 +1,10 @@
 import express from 'express';
+import FakeInfo from './FakeInfo';
 
 const app = express()
 const port = 3000
+
+
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -10,32 +13,32 @@ app.get('/', (req, res) => {
 
 // GET /cpr
 app.get("/cpr", (_req, res) => {
-  res.json({ CPR: getCPR() });
+  res.json({ CPR: FakeInfo.getCPR() });
 });
 
 // GET /name-gender
 app.get("/name-gender", (_req, res) => {
-  const { firstName, lastName, gender } = getFullNameAndGender();
+  const { firstName, lastName, gender } = FakeInfo.getFullNameAndGender();
   res.json({ firstName, lastName, gender });
 });
 
 // GET /name-gender-dob
 app.get("/name-gender-dob", (_req, res) => {
-  const { firstName, lastName, gender, birthDate } = getFullNameGenderAndBirthDate();
+  const { firstName, lastName, gender, birthDate } = FakeInfo.getFullNameGenderAndBirthDate();
   res.json({ firstName, lastName, gender, birthDate });
 });
 
 // GET /cpr-name-gender
 app.get("/cpr-name-gender", (_req, res) => {
-  const { firstName, lastName, gender } = getFullNameAndGender();
-  const CPR = getCPR();
+  const { firstName, lastName, gender } = FakeInfo.getFullNameAndGender();
+  const CPR = FakeInfo.getCPR();
   res.json({ CPR, firstName, lastName, gender });
 });
 
 // GET /cpr-name-gender-dob
 app.get("/cpr-name-gender-dob", (_req, res) => {
-  const { firstName, lastName, gender, birthDate } = getFullNameGenderAndBirthDate();
-  const CPR = getCPR();
+  const { firstName, lastName, gender, birthDate } = FakeInfo.getFullNameGenderAndBirthDate();
+  const CPR = FakeInfo.getCPR();
   res.json({ CPR, firstName, lastName, gender, birthDate });
 });
 
