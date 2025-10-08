@@ -8,6 +8,17 @@ services:
     networks:
       - app-network
 
+  database: 
+    image: mysql:8.0-debian
+    restart: always
+    ports: 
+        - "3307:3306"
+        - "33061:33060"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      
+    
+
   api:
     build: ./api
     ports:
