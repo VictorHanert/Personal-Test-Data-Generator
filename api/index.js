@@ -61,7 +61,7 @@ app.get("/person", async (req, res) => {
   try {
     const n = req.query.n;
     if (n) {
-      return res.json(await FakeInfo.getFakePerson(n));
+      return res.json(await FakeInfo.getFakePersons(n));
     }
     return res.json(await FakeInfo.getFakePerson());
   } catch (e) {
