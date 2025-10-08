@@ -24,35 +24,35 @@ export default class FakeInfo {
   static MIN_BULK_PERSONS = 2;
   static MAX_BULK_PERSONS = 100;
 
-  /** @type {string} */ #cpr;
-  /** @type {string} */ #firstName;
-  /** @type {string} */ #lastName;
-  /** @type {string} */ #gender;
-  /** @type {string} */ #birthDate; // YYYY-MM-DD
-  /** @type {object} */ #address = {};
-  /** @type {string} */ #phone;
+  /** @type {string} */ cpr;
+  /** @type {string} */ firstName;
+  /** @type {string} */ lastName;
+  /** @type {string} */ gender;
+  /** @type {string} */ birthDate; // YYYY-MM-DD
+  /** @type {object} */ address = {};
+  /** @type {string} */ phone;
 
   constructor() {
-    this.#setFullNameAndGender();
-    this.#setBirthDate();
-    this.#setCpr();
-    this.#setAddress();
-    this.#setPhone();
+    this.setFullNameAndGender();
+    this.setBirthDate();
+    this.setCpr();
+    this.setAddress();
+    this.setPhone();
   }
 
   // -------------------------
   // Private helpers
   // -------------------------
-  static #randInt(min, max) {
+  static randInt(min, max) {
     // inclusive integers like PHP mt_rand
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  static #pick(arr) {
-    return arr[FakeInfo.#randInt(0, arr.length - 1)];
+  static pick(arr) {
+    return arr[FakeInfo.randInt(0, arr.length - 1)];
   }
 
-  static #fileExists(p) {
+  static fileExists(p) {
     try {
       return fs.existsSync(p) && fs.statSync(p).isFile();
     } catch {
@@ -60,8 +60,8 @@ export default class FakeInfo {
     }
   }
 
-  static #loadJSONIfExists(p) {
-    if (!FakeInfo.#fileExists(p)) return null;
+  static loadJSONIfExists(p) {
+    if (!FakeInfo.fileExists(p)) return null;
     try {
       const txt = fs.readFileSync(p, "utf8");
       return JSON.parse(txt);
@@ -73,11 +73,11 @@ export default class FakeInfo {
   // -------------------------
   // Name & gender
   // -------------------------
-  #setFullNameAndGender() {
+  setFullNameAndGender() {
     // Try to load data/person-names.json; expected shape:
     // { "persons": [ { "firstName": "...", "lastName": "...", "gender": "female"|"male" }, ... ] }
     const filePath = path.resolve(process.cwd(), FakeInfo.FILE_PERSON_NAMES);
-    let namesData = FakeInfo.#loadJSONIfExists(filePath);
+    let namesData = FakeInfo.loadJSONIfExists(filePath);
 
     if (!namesData || !Array.isArray(namesData.persons) || namesData.persons.length === 0) {
       // fallback tiny dataset to keep class functional without external files
@@ -93,80 +93,80 @@ export default class FakeInfo {
       };
     }
 
-    const person = FakeInfo.#pick(namesData.persons);
-    this.#firstName = person.firstName;
-    this.#lastName = person.lastName;
-    this.#gender = person.gender;
+    const person = FakeInfo.pick(namesData.persons);
+    this.firstName = person.firstName;
+    this.lastName = person.lastName;
+    this.gender = person.gender;
   }
 
   // -------------------------
   // Birth date (1900..current year)
   // -------------------------
-  #setBirthDate() {
+  setBirthDate() {
     const nowYear = new Date().getFullYear();
-    const year = FakeInfo.#randInt(1900, nowYear);
-    const month = FakeInfo.#randInt(1, 12);
+    const year = FakeInfo.randInt(1900, nowYear);
+    const month = FakeInfo.randInt(1, 12);
     let day;
 
     if ([1, 3, 5, 7, 8, 10, 12].includes(month)) {
-      day = FakeInfo.#randInt(1, 31);
+      day = FakeInfo.randInt(1, 31);
     } else if ([4, 6, 9, 11].includes(month)) {
-      day = FakeInfo.#randInt(1, 30);
+      day = FakeInfo.randInt(1, 30);
     } else {
       // February — intentionally ignore leap years to mirror PHP code
-      day = FakeInfo.#randInt(1, 28);
+      day = FakeInfo.randInt(1, 28);
     }
 
     const mm = String(month).padStart(2, "0");
     const dd = String(day).padStart(2, "0");
-    this.#birthDate = `${year}-${mm}-${dd}`;
+    this.birthDate = `${year}-${mm}-${dd}`;
   }
 
   // -------------------------
   // CPR
   // -------------------------
-  #setCpr() {
-    if (!this.#birthDate) this.#setBirthDate();
-    if (!this.#firstName || !this.#lastName || !this.#gender) this.#setFullNameAndGender();
+  setCpr() {
+    if (!this.birthDate) this.setBirthDate();
+    if (!this.firstName || !this.lastName || !this.gender) this.setFullNameAndGender();
 
     // CPR must end in an even number for females, odd for males
-    let finalDigit = FakeInfo.#randInt(0, 9);
-    if (this.#gender === FakeInfo.GENDER_FEMININE && finalDigit % 2 === 1) {
+    let finalDigit = FakeInfo.randInt(0, 9);
+    if (this.gender === FakeInfo.GENDER_FEMININE && finalDigit % 2 === 1) {
       finalDigit += 1; // could become 10; adjust back to 0 if so
       if (finalDigit === 10) finalDigit = 0;
     }
-    if (this.#gender === FakeInfo.GENDER_MASCULINE && finalDigit % 2 === 0) {
+    if (this.gender === FakeInfo.GENDER_MASCULINE && finalDigit % 2 === 0) {
       finalDigit += 1; // ensure odd
       if (finalDigit === 10) finalDigit = 1;
     }
 
-    const yyyy = this.#birthDate.slice(0, 4);
-    const mm = this.#birthDate.slice(5, 7);
-    const dd = this.#birthDate.slice(8, 10);
+    const yyyy = this.birthDate.slice(0, 4);
+    const mm = this.birthDate.slice(5, 7);
+    const dd = this.birthDate.slice(8, 10);
     const yy = yyyy.slice(2, 4);
 
-    const randDigit = () => String(FakeInfo.#randInt(0, 9));
+    const randDigit = () => String(FakeInfo.randInt(0, 9));
 
-    this.#cpr = `${dd}${mm}${yy}${randDigit()}${randDigit()}${randDigit()}${finalDigit}`;
+    this.cpr = `${dd}${mm}${yy}${randDigit()}${randDigit()}${randDigit()}${finalDigit}`;
   }
 
   // -------------------------
   // Address
   // -------------------------
-  #setAddress() {
-    const street = FakeInfo.#getRandomText(40, true);
+  setAddress() {
+    const street = FakeInfo.getRandomText(40, true);
 
     // Number: 1..999 optionally with a capital letter (≈20%)
-    let number = String(FakeInfo.#randInt(1, 999));
-    if (FakeInfo.#randInt(1, 10) < 3) {
-      number += FakeInfo.#getRandomText(1, false).toUpperCase();
+    let number = String(FakeInfo.randInt(1, 999));
+    if (FakeInfo.randInt(1, 10) < 3) {
+      number += FakeInfo.getRandomText(1, false).toUpperCase();
     }
 
     // Floor: "st" about 30% else 1..99
-    const floor = (FakeInfo.#randInt(1, 10) < 4) ? "st" : FakeInfo.#randInt(1, 99);
+    const floor = (FakeInfo.randInt(1, 10) < 4) ? "st" : FakeInfo.randInt(1, 99);
 
     // Door distribution same as PHP
-    const doorType = FakeInfo.#randInt(1, 20);
+    const doorType = FakeInfo.randInt(1, 20);
     let door;
     if (doorType < 8) {
       door = "th";
@@ -175,21 +175,21 @@ export default class FakeInfo {
     } else if (doorType < 17) {
       door = "mf";
     } else if (doorType < 19) {
-      door = String(FakeInfo.#randInt(1, 50));
+      door = String(FakeInfo.randInt(1, 50));
     } else {
       const lowerCaseLetters = [
         "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q",
         "r","s","t","u","v","w","x","y","z","ø","æ","å"
       ];
-      door = FakeInfo.#pick(lowerCaseLetters);
+      door = FakeInfo.pick(lowerCaseLetters);
       if (doorType === 20) door += "-";
-      door += String(FakeInfo.#randInt(1, 999));
+      door += String(FakeInfo.randInt(1, 999));
     }
 
     // Postal code + town
-    const { postal_code, town_name } = this.#getRandomTown();
+    const { postal_code, town_name } = this.getRandomTown();
 
-    this.#address = {
+    this.address = {
       street,
       number,
       floor,
@@ -200,10 +200,10 @@ export default class FakeInfo {
   }
 
   // Minimal Town helper (tries data/towns.json; else uses a fallback list)
-  #getRandomTown() {
+  getRandomTown() {
     // Expected shape of data/towns.json: [{ "postal_code": "1050", "town_name": "København K" }, ...]
     const townsPath = path.resolve(process.cwd(), "data/towns.json");
-    let towns = FakeInfo.#loadJSONIfExists(townsPath);
+    let towns = FakeInfo.loadJSONIfExists(townsPath);
     if (!Array.isArray(towns) || towns.length === 0) {
       towns = [
         { postal_code: "1050", town_name: "København K" },
@@ -214,13 +214,13 @@ export default class FakeInfo {
         { postal_code: "4000", town_name: "Roskilde" }
       ];
     }
-    return FakeInfo.#pick(towns);
+    return FakeInfo.pick(towns);
   }
 
   // -------------------------
   // Random text (letters + optional Danish chars + space)
   // -------------------------
-  static #getRandomText(length = 1, includeDanishCharacters = true) {
+  static getRandomText(length = 1, includeDanishCharacters = true) {
     let valid = [
       " ",..."abcdefghijklmnopqrstuvwxyz".split(""),
       ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
@@ -229,9 +229,9 @@ export default class FakeInfo {
       valid = valid.concat(["æ","ø","å","Æ","Ø","Å"]);
     }
     // First character cannot be space
-    let text = valid[FakeInfo.#randInt(1, valid.length - 1)];
+    let text = valid[FakeInfo.randInt(1, valid.length - 1)];
     for (let i = 1; i < length; i++) {
-      text += valid[FakeInfo.#randInt(0, valid.length - 1)];
+      text += valid[FakeInfo.randInt(0, valid.length - 1)];
     }
     return text;
   }
@@ -239,75 +239,75 @@ export default class FakeInfo {
   // -------------------------
   // Phone number
   // -------------------------
-  #setPhone() {
-    let phone = FakeInfo.#pick(FakeInfo.PHONE_PREFIXES);
+  setPhone() {
+    let phone = FakeInfo.pick(FakeInfo.PHONE_PREFIXES);
     const prefixLen = phone.length;
     for (let i = 0; i < (8 - prefixLen); i++) {
-      phone += String(FakeInfo.#randInt(0, 9));
+      phone += String(FakeInfo.randInt(0, 9));
     }
-    this.#phone = phone;
+    this.phone = phone;
   }
 
   // -------------------------
   // Public getters (API mirrors PHP)
   // -------------------------
-  getCpr() {
-    return this.#cpr;
+  static getCpr() {
+    return this.cpr;
   }
 
   getFullNameAndGender() {
     return {
-      firstName: this.#firstName,
-      lastName: this.#lastName,
-      gender: this.#gender
+      firstName: this.firstName,
+      lastName: this.lastName,
+      gender: this.gender
     };
   }
 
   getFullNameGenderAndBirthDate() {
     return {
-      firstName: this.#firstName,
-      lastName: this.#lastName,
-      gender: this.#gender,
-      birthDate: this.#birthDate
+      firstName: this.firstName,
+      lastName: this.lastName,
+      gender: this.gender,
+      birthDate: this.birthDate
     };
   }
 
   getCprFullNameAndGender() {
     return {
-      CPR: this.#cpr,
-      firstName: this.#firstName,
-      lastName: this.#lastName,
-      gender: this.#gender
+      CPR: this.cpr,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      gender: this.gender
     };
   }
 
   getCprFullNameGenderAndBirthDate() {
     return {
-      CPR: this.#cpr,
-      firstName: this.#firstName,
-      lastName: this.#lastName,
-      gender: this.#gender,
-      birthDate: this.#birthDate
+      CPR: this.cpr,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      gender: this.gender,
+      birthDate: this.birthDate
     };
   }
 
   getAddress() {
-    return { address: this.#address };
+    return { address: this.address };
   }
 
   getPhoneNumber() {
-    return this.#phone;
+    return this.phone;
   }
 
   getFakePerson() {
     return {
-      CPR: this.#cpr,
-      firstName: this.#firstName,
-      lastName: this.#lastName,
-      gender: this.#gender,
-      birthDate: this.#birthDate,
-      address: this.#address,
-      phoneNumber: this.#phone
+      CPR: this.cpr,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      gender: this.gender,
+      birthDate: this.birthDate,
+      address: this.address,
+      phoneNumber: this.phone
     };
   }
 
