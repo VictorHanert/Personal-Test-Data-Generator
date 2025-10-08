@@ -1,77 +1,72 @@
+// index.js
 import express from 'express';
 import FakeInfo from './FakeInfo.js';
 
-const app = express()
-const port = 3000
+const app = express();
+const port = 3000;
 
-
-
-app.get('/hello', (req, res) => {
-  res.send('Hello World!')
-})
-
+app.get('/hello', (_req, res) => {
+  res.send('Hello World!');
+});
 
 // GET /cpr
-app.get("/cpr", (_req, res) => {
-  res.json({ CPR: FakeInfo.getCpr() });
+app.get('/cpr', (_req, res) => {
+  const f = new FakeInfo();
+  res.json({ CPR: f.cpr });            // or: res.json({ CPR: f.getFakePerson().CPR });
 });
 
 // GET /name-gender
-app.get("/name-gender", (_req, res) => {
-  const { firstName, lastName, gender } = FakeInfo.getFullNameAndGender();
+app.get('/name-gender', (_req, res) => {
+  const f = new FakeInfo();
+  const { firstName, lastName, gender } = f.getFullNameAndGender();
   res.json({ firstName, lastName, gender });
 });
 
 // GET /name-gender-dob
-app.get("/name-gender-dob", (_req, res) => {
-  const { firstName, lastName, gender, birthDate } = FakeInfo.getFullNameGenderAndBirthDate();
+app.get('/name-gender-dob', (_req, res) => {
+  const f = new FakeInfo();
+  const { firstName, lastName, gender, birthDate } = f.getFullNameGenderAndBirthDate();
   res.json({ firstName, lastName, gender, birthDate });
 });
 
 // GET /cpr-name-gender
-app.get("/cpr-name-gender", (_req, res) => {
-  const { firstName, lastName, gender } = FakeInfo.getFullNameAndGender();
-  const CPR = FakeInfo.getCPR();
-  res.json({ CPR, firstName, lastName, gender });
+app.get('/cpr-name-gender', (_req, res) => {
+  const f = new FakeInfo();
+  const { firstName, lastName, gender } = f.getFullNameAndGender();
+  res.json({ CPR: f.cpr, firstName, lastName, gender });
 });
 
 // GET /cpr-name-gender-dob
-app.get("/cpr-name-gender-dob", (_req, res) => {
-  const { firstName, lastName, gender, birthDate } = FakeInfo.getFullNameGenderAndBirthDate();
-  const CPR = FakeInfo.getCPR();
-  res.json({ CPR, firstName, lastName, gender, birthDate });
+app.get('/cpr-name-gender-dob', (_req, res) => {
+  const f = new FakeInfo();
+  const { firstName, lastName, gender, birthDate } = f.getFullNameGenderAndBirthDate();
+  res.json({ CPR: f.cpr, firstName, lastName, gender, birthDate });
 });
 
 // GET /address
-app.get("/address", async (_req, res) => {
-  try {
-    res.json(await FakeInfo.getAddress());
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
+app.get('/address', (_req, res) => {
+  const f = new FakeInfo();
+  res.json(f.getAddress()); // getAddress() is sync in your class
 });
 
 // GET /phone
-app.get("/phone", (_req, res) => {
-  res.json({ phoneNumber: FakeInfo.getPhoneNumber() });
+app.get('/phone', (_req, res) => {
+  const f = new FakeInfo();
+  res.json({ phoneNumber: f.getPhoneNumber() });
 });
 
 // GET /person and /person?n=#
-app.get("/person", async (req, res) => {
-  try {
-    const n = req.query.n;
-    if (n) {
-      return res.json(await FakeInfo.getFakePersons(n));
-    }
-    return res.json(await FakeInfo.getFakePerson());
-  } catch (e) {
-    res.status(500).json({ error: e.message });
+app.get('/person', (req, res) => {
+  // amount is optional; your class enforces [2..100] for bulk
+  const n = Number(req.query.n);
+  if (Number.isFinite(n)) {
+    const f = new FakeInfo();
+    return res.json(f.getFakePersons(n));
   }
+  const f = new FakeInfo();
+  return res.json(f.getFakePerson());
 });
 
-
-
-
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+  console.log(`API listening on port ${port}`);
+});
