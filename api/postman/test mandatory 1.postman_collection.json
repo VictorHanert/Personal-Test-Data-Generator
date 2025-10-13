@@ -1,0 +1,163 @@
+{
+	"info": {
+		"_postman_id": "",
+		"name": "test mandatory 1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": ""
+	},
+	"item": [
+		{
+			"name": "cpr",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/cpr",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"cpr"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "hello",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/hello",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"hello"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "name-gender",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/name-gender",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"name-gender"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "name-gender-dob",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/name-gender-dob",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"name-gender-dob"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cpr-name-gender",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/cpr-name-gender",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"cpr-name-gender"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cpr-name-gender-dob",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/cpr-name-gender-dob",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"cpr-name-gender-dob"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "address",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/address",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"address"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "person",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/person",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"person"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "phone",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/phone",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"phone"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
