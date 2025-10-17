@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_ENV=test jest --detectOpenHandles --runInBand"
   },
   "repository": {
     "type": "git",
@@ -16,5 +16,9 @@
     "url": "https://github.com/VictorHanert/Personal-Test-Data-Generator/issues"
   },
   "homepage": "https://github.com/VictorHanert/Personal-Test-Data-Generator#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "supertest": "^7.1.4"
+  }
 }
