@@ -67,6 +67,30 @@ app.get('/person', (req, res) => {
   return res.json(f.getFakePerson());
 });
 
+app.get('/validate-cpr', (req, res) => {
+  const { cpr, gender } = req.query;
+
+  if (!cpr || typeof cpr !== 'string') {
+    return res.status(400).json({ error: 'CPR is required' });
+  }
+  if (!gender || !['male', 'female'].includes(gender)) {
+    return res.status(400).json({ error: 'Gender must be "male" or "female"' });
+  }
+
+  const f = new FakeInfo();
+  const isValid = f.validateCPR(cpr, gender);
+  if (!isValid) {
+    return res.status(400).json({ error: 'Invalid CPR' });
+  }
+
+  // If valid, you can derive it or just echo back the provided gender.
+  // Prefer deriving to ensure consistency:
+  const derived = f.getGenderFromCPR?.(cpr) ?? gender;
+  return res.status(200).json({ gender: derived });
+});
+
 app.listen(port, () => {
   console.log(`API listening on port ${port}`);
 });
+
+export default app;

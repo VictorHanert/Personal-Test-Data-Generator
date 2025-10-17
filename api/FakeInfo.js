@@ -325,4 +325,27 @@ export default class FakeInfo {
     }
     return bulk;
   }
+  
+  validateCPR(cpr, gender = "male") {
+    // Simple validation: check length and gender
+    if (typeof cpr !== "string" || cpr.length !== 10) {
+      return null;
+    }
+    const finalDigit = parseInt(cpr.charAt(9), 10);
+    if (isNaN(finalDigit)) {
+      return null;
+    }
+    // Check for non-numeric characters
+    if (!/^\d+$/.test(cpr)) {
+      return null;
+    }
+    // Check gender parity
+    if (gender === "female" && finalDigit % 2 === 0) {
+      return "female";
+    }
+    if (gender === "male" && finalDigit % 2 !== 0) {
+      return "male";
+    }
+    return null;
+  }
 }
