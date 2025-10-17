@@ -89,6 +89,23 @@ app.get('/validate-cpr', (req, res) => {
   return res.status(200).json({ gender: derived });
 });
 
+app.get("/validate-phone", (req, res) => {
+  const { phone } = req.query;
+
+  if (typeof phone !== "string") {
+    return res.status(400).json({ error: 'Query param "phone" is required' });
+  }
+
+  const fi = new FakeInfo();
+  const valid = fi.validatePhoneNumber(phone);
+
+  if (!valid) {
+    return res.status(400).json({ error: "Invalid phone number" });
+  }
+
+  return res.status(200).json({ ok: true, phone });
+});
+
 app.listen(port, () => {
   console.log(`API listening on port ${port}`);
 });

@@ -348,4 +348,18 @@ export default class FakeInfo {
     }
     return null;
   }
+
+  validatePhoneNumber(phoneNumber) {
+  // Must be a string of 8 digits
+  if (typeof phoneNumber !== "string" || !/^\d{8}$/.test(phoneNumber)) {
+    return false;
+  }
+
+  // Match any valid prefix at the start
+  const hasValidPrefix = FakeInfo.PHONE_PREFIXES.some(prefix =>
+    phoneNumber.startsWith(prefix)
+  );
+
+  return hasValidPrefix;
+}
 }
