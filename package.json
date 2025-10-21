@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/VictorHanert/Personal-Test-Data-Generator.git"
@@ -16,5 +14,9 @@
     "url": "https://github.com/VictorHanert/Personal-Test-Data-Generator/issues"
   },
   "homepage": "https://github.com/VictorHanert/Personal-Test-Data-Generator#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^24.9.1"
+  }
 }
