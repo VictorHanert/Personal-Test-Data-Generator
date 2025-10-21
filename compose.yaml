@@ -9,7 +9,7 @@ services:
       - app-network
 
   database: 
-    image: mysql:8.0-debian
+    image: mysql:8.0
     restart: always
     ports: 
         - "3307:3306"
