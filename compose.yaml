@@ -16,7 +16,9 @@ services:
         - "33061:33060"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      
+      MYSQL_DATABASE: addresses
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     
 
   api:
