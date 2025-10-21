@@ -1,0 +1,27 @@
+
+
+# optional - name of the workflow that will appear in the 'actions' tab
+name: learn-github-actions
+# optional - the name for workflow runs generated from the workflow (the github user's name)
+run-name: ${{ github.actor }} is learning GitHub Actions
+# the trigger for the workflow
+on: [push]
+# froup togther all the jobs in this one workflow
+jobs:
+  # one job, with the custom name of 'check-bats-version'
+  check-bats-version:
+    # the version of the linux runner
+    runs-on: ubuntu-latest
+    # groups of all the steps
+    steps:
+      # 'uses' keyword, specifies that we will use v5 of checkout
+      - uses: actions/checkout@v5
+      # here we will be using node v4 and version 22
+      # this adds node and npm to our PATH
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      # 'run' is used to do commands
+      - run: npm install -g bats
+      # after installing bats, we run the 'bats -v' command
+      - run: bats -v
