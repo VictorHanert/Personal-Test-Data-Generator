@@ -4,8 +4,7 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
-    "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --runInBand",
-    "testWin": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --runInBand",
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --runInBand",
     "dev": "nodemon index.js"
   },
   "author": "",
