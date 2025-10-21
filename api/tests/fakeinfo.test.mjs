@@ -1,6 +1,6 @@
 import {jest} from '@jest/globals';
 
-import FakeInfo from './FakeInfo';
+import FakeInfo from '../FakeInfo.js';
 
 // my first jest unit test
 test("can we create a FakeInfo object ?",() => {
