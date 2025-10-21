@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --runInBand",
+    "testWin": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --runInBand",
     "dev": "nodemon index.js"
   },
   "author": "",
@@ -17,6 +18,7 @@
     "path": "^0.12.7"
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
     "nodemon": "^3.1.10",
     "supertest": "^7.1.4"
   }
