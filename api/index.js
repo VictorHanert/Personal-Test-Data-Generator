@@ -1,9 +1,14 @@
 // index.js
 import FakeInfo from './FakeInfo.js';
 import express from 'express';
+import cors from 'cors';
 
 const app = express();
 const port = 3000;
+
+
+// Enable CORS for the UI on :8080 (do this BEFORE any routes)
+app.use(cors({ origin: 'http://localhost:8080' }));
 
 app.get('/hello', (_req, res) => {
   res.send('Hello World!');
@@ -109,5 +114,6 @@ app.get("/validate-phone", (req, res) => {
 app.listen(port, () => {
   console.log(`API listening on port ${port}`);
 });
+
 
 export default app;

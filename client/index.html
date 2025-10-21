@@ -1,10 +1,110 @@
-<!-- public/index.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Simple Node App</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FakeInfo API Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <script defer src="./app.js"></script>
+  <style>
+    :root {
+      --bg:#0b1220; --card:#111a2a; --muted:#93aac5; --accent:#8bd3ff;
+      --ok:#2ecc71; --err:#ff6b6b; --text:#e6f0ff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu,Arial,sans-serif;
+      background:var(--bg);color:var(--text)
+    }
+    header{
+      padding:24px 20px;border-bottom:1px solid #22324d;
+      background:linear-gradient(180deg,#0e1729,#0b1220)
+    }
+    h1{margin:0;font-size:20px;letter-spacing:.3px}
+    .wrap{display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:start;padding:18px}
+    @media (max-width:920px){.wrap{grid-template-columns:1fr}}
+    .card{
+      background:var(--card);border:1px solid #243553;border-radius:16px;
+      box-shadow:0 10px 24px rgba(0,0,0,.25);padding:16px
+    }
+    .group{display:grid;gap:10px;margin-bottom:14px}
+    .title{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+    button,input,select{
+      width:100%;padding:10px 12px;border-radius:12px;
+      border:1px solid #2a3d5f;background:#0f1625;color:var(--text);outline:none
+    }
+    button{background:#173257;cursor:pointer}
+    button:hover{filter:brightness(1.08)}
+    button:active{transform:translateY(1px)}
+    .ok{color:var(--ok)}
+    .err{color:var(--err)}
+    pre{
+      margin:0;background:#0a1322;border-radius:12px;padding:14px;
+      overflow:auto;max-height:60vh;border:1px solid #22324d
+    }
+    .flex{display:flex;gap:8px}
+    .muted{color:var(--muted);font-size:12px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .small{font-size:12px}
+  </style>
 </head>
 <body>
-  <h1>Hello from plain HTML!</h1>
+  <header>
+    <h1>FakeInfo API Playground</h1>
+  </header>
+
+  <div class="wrap">
+    <section class="card">
+      <div class="group">
+        <div class="title">Quick endpoints</div>
+        <div class="grid">
+          <button data-testid="btn-hello">/hello</button>
+          <button data-testid="btn-cpr">/cpr</button>
+          <button data-testid="btn-name-gender">/name-gender</button>
+          <button data-testid="btn-name-gender-dob">/name-gender-dob</button>
+          <button data-testid="btn-cpr-name-gender">/cpr-name-gender</button>
+          <button data-testid="btn-cpr-name-gender-dob">/cpr-name-gender-dob</button>
+          <button data-testid="btn-address">/address</button>
+          <button data-testid="btn-phone">/phone</button>
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="title">/person (bulk)</div>
+        <div class="row">
+          <input data-testid="input-n" type="number" min="2" max="100" value="5" placeholder="Amount (2-100)" />
+          <button data-testid="btn-person-bulk">Fetch</button>
+        </div>
+        <div class="muted small">If left empty, backend returns a single person.</div>
+      </div>
+
+      <div class="group">
+        <div class="title">/validate-cpr</div>
+        <div class="row">
+          <input data-testid="input-cpr" type="text" placeholder="CPR e.g. 0102031234" />
+          <select data-testid="select-gender">
+            <option value="male" selected>male</option>
+            <option value="female">female</option>
+          </select>
+        </div>
+        <button data-testid="btn-validate-cpr">Validate CPR</button>
+      </div>
+
+      <div class="group">
+        <div class="title">/validate-phone</div>
+        <div class="row">
+          <input data-testid="input-phone" type="text" placeholder="8-digit phone" />
+          <button data-testid="btn-validate-phone">Validate</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="title">Response</div>
+      <div class="muted small">Status: <span data-testid="status">—</span></div>
+      <pre data-testid="output">Click a button to call the API…</pre>
+    </section>
+  </div>
 </body>
 </html>
