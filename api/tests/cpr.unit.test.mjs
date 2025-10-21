@@ -1,8 +1,5 @@
 import FakeInfo from '../FakeInfo.js';
 
-// File: FakeInfo.test.js
-// We recommend installing an extension to run jest tests.
-
 
 describe('validateCPR', () => {
     let fakeInfo;
