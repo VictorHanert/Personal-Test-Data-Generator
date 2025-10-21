@@ -349,9 +349,14 @@ export default class FakeInfo {
     return null;
   }
 
-  validatePhoneNumber(phoneNumber) {
+validatePhoneNumber(phoneNumber) {
+  if (typeof phoneNumber !== "string") return false;
+
+  // Remove leading/trailing whitespace and internal spaces
+  phoneNumber = phoneNumber.trim().replace(/\s+/g, "");
+
   // Must be a string of 8 digits
-  if (typeof phoneNumber !== "string" || !/^\d{8}$/.test(phoneNumber)) {
+  if (!/^\d{8}$/.test(phoneNumber)) {
     return false;
   }
 
