@@ -326,4 +326,46 @@ export default class FakeInfo {
     }
     return bulk;
   }
+  
+  validateCPR(cpr, gender = "male") {
+    // Simple validation: check length and gender
+    if (typeof cpr !== "string" || cpr.length !== 10) {
+      return null;
+    }
+    const finalDigit = parseInt(cpr.charAt(9), 10);
+    if (isNaN(finalDigit)) {
+      return null;
+    }
+    // Check for non-numeric characters
+    if (!/^\d+$/.test(cpr)) {
+      return null;
+    }
+    // Check gender parity
+    if (gender === "female" && finalDigit % 2 === 0) {
+      return "female";
+    }
+    if (gender === "male" && finalDigit % 2 !== 0) {
+      return "male";
+    }
+    return null;
+  }
+
+validatePhoneNumber(phoneNumber) {
+  if (typeof phoneNumber !== "string") return false;
+
+  // Remove leading/trailing whitespace and internal spaces
+  phoneNumber = phoneNumber.trim().replace(/\s+/g, "");
+
+  // Must be a string of 8 digits
+  if (!/^\d{8}$/.test(phoneNumber)) {
+    return false;
+  }
+
+  // Match any valid prefix at the start
+  const hasValidPrefix = FakeInfo.PHONE_PREFIXES.some(prefix =>
+    phoneNumber.startsWith(prefix)
+  );
+
+  return hasValidPrefix;
+}
 }

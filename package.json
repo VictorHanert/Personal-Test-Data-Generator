@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
-  "scripts": {},
+  "scripts": {
+    "test": "NODE_ENV=test jest --detectOpenHandles --runInBand"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/VictorHanert/Personal-Test-Data-Generator.git"
@@ -17,6 +19,8 @@
   "description": "",
   "devDependencies": {
     "@playwright/test": "^1.56.1",
-    "@types/node": "^24.9.1"
+    "@types/node": "^24.9.1",
+    "nodemon": "^3.1.10",
+    "supertest": "^7.1.4"
   }
 }
