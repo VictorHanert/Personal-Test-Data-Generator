@@ -154,8 +154,9 @@ export default class FakeInfo {
   // Address
   // -------------------------
   setAddress() {
-    const street = FakeInfo.getRandomText(40, true);
-
+    const randomLength = FakeInfo.randInt(2, 47);
+    const street = FakeInfo.getRandomText(randomLength, true);
+    
     // Number: 1..999 optionally with a capital letter (≈20%)
     let number = String(FakeInfo.randInt(1, 999));
     if (FakeInfo.randInt(1, 10) < 3) {

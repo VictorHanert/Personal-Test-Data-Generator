@@ -1,6 +1,6 @@
 // index.js
-import express from 'express';
 import FakeInfo from './FakeInfo.js';
+import express from 'express';
 
 const app = express();
 const port = 3000;
