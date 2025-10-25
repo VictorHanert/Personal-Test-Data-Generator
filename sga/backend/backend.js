@@ -17,8 +17,12 @@ const app = express();
 app.get("/api/fake-cpr", (req, res) => {
   console.log("/api/fake-cpr");
 
-  fakeCpr();
-  res.json({ status: "ok" });
+  const randomPerson = fakeCpr();
+
+  const cpr = randomPerson.cpr;
+  res.json({
+    data: { cpr },
+  });
 });
 
 // Return a fake first name, last name and gender
