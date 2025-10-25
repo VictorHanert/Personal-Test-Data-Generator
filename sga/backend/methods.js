@@ -1,6 +1,11 @@
+import { db } from "./database.js";
+
 // Return a fake CPR
 export function fakeCpr() {
   console.log("fakeCpr()");
+  const randomPerson = db.persons[Math.floor(Math.random() * db.persons.length)];
+
+  return randomPerson.cpr;
 }
 
 // Return a fake first name, last name and gender
