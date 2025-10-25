@@ -17,9 +17,8 @@ const app = express();
 app.get("/api/fake-cpr", (req, res) => {
   console.log("/api/fake-cpr");
 
-  const randomPerson = fakeCpr();
+  const cpr = fakeCpr();
 
-  const cpr = randomPerson.cpr;
   res.json({
     data: { cpr },
   });

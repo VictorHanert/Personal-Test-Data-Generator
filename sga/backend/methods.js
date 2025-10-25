@@ -5,7 +5,7 @@ export function fakeCpr() {
   console.log("fakeCpr()");
   const randomPerson = db.persons[Math.floor(Math.random() * db.persons.length)];
 
-  return randomPerson;
+  return randomPerson.cpr;
 }
 
 // Return a fake first name, last name and gender
