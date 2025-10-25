@@ -14,13 +14,13 @@ import {
 const app = express();
 
 // Return a fake CPR
-app.get("/fake-cpr", (req, res) => {
+app.get("/api/fake-cpr", (req, res) => {
   fakeCpr();
   res.json({ status: "ok" });
 });
 
 // Return a fake first name, last name and gender
-app.get("/fake-first-name-last-name-gender", (req, res) => {
+app.get("/api/fake-first-name-last-name-gender", (req, res) => {
   fakeFirstNameLastNameGender();
   res.json({ status: "ok" });
 });
@@ -68,7 +68,7 @@ app.get("/fake-person-information-bulk", (req, res) => {
   res.json({ status: "ok" });
 });
 
-const PORT = 8080;
+const PORT = 3000;
 app.listen(PORT, () => {
-  console.log("Server is running on PORT", PORT);
+  console.log("Backend is running on PORT", PORT);
 });
