@@ -71,6 +71,13 @@ export function fakePerson() {
 }
 
 // Return fake person information in bulk (all information for 2 to 100 persons)
-export function fakePersonInformationBulk() {
-  console.log("fakePersonInformationBulk()");
+export function fakePersonBulk(n) {
+  console.log("fakePersonBulk()", n);
+
+  const persons = [];
+  for (let i = 0; i < n; i++) {
+    persons.push(fakePerson());
+  }
+
+  return persons;
 }

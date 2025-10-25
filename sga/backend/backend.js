@@ -8,7 +8,7 @@ import {
   fakeFirstNameLastNameGenderDob,
   fakeMobilePhoneNumber,
   fakePerson,
-  fakePersonInformationBulk,
+  fakePersonBulk,
 } from "./methods.js";
 
 const app = express();
@@ -88,9 +88,25 @@ app.get("/api/fake-person", (req, res) => {
 });
 
 // Return fake person information in bulk (all information for 2 to 100 persons)
-app.get("/fake-person-information-bulk", (req, res) => {
-  fakePersonInformationBulk();
-  res.json({ status: "ok" });
+app.get("/api/fake-person-bulk/:n", (req, res) => {
+  const n = parseInt(req.params.n);
+
+  // if no n return error
+  if (isNaN(n)) return res.status(400).json({ error: "Invalid parameter" });
+
+  // if under 2 return error
+  if (n < 2) return res.status(400).json({ error: "Minimum 2 required" });
+
+  // if over 100 return error
+  if (n > 100) return res.status(400).json({ error: "Maximum 100 allowed" });
+
+  const data = fakePersonBulk(n);
+
+  res.json({
+    data: {
+      data,
+    },
+  });
 });
 
 const PORT = 3000;
