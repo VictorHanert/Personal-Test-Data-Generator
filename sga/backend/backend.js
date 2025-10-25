@@ -100,11 +100,11 @@ app.get("/api/fake-person-bulk/:n", (req, res) => {
   // if over 100 return error
   if (n > 100) return res.status(400).json({ error: "Maximum 100 allowed" });
 
-  const data = fakePersonBulk(n);
+  const persons = fakePersonBulk(n);
 
   res.json({
     data: {
-      data,
+      persons,
     },
   });
 });
