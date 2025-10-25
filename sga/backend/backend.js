@@ -7,7 +7,7 @@ import {
   fakeFirstNameLastNameGender,
   fakeFirstNameLastNameGenderDob,
   fakeMobilePhoneNumber,
-  fakePersonInformation,
+  fakePerson,
   fakePersonInformationBulk,
 } from "./methods.js";
 
@@ -18,6 +18,7 @@ app.get("/api/fake-cpr", (req, res) => {
   console.log("/api/fake-cpr");
 
   const cpr = fakeCpr();
+  console.log(cpr);
 
   res.json({
     data: { cpr },
@@ -26,8 +27,16 @@ app.get("/api/fake-cpr", (req, res) => {
 
 // Return a fake first name, last name and gender
 app.get("/api/fake-first-name-last-name-gender", (req, res) => {
-  fakeFirstNameLastNameGender();
-  res.json({ status: "ok" });
+  const data = fakeFirstNameLastNameGender();
+  console.log(data);
+
+  res.json({
+    data: {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      gender: data.gender,
+    },
+  });
 });
 
 // Return a fake first name, last name, gender and date of birth
@@ -62,9 +71,11 @@ app.get("/fake-mobile-phone-number", (req, res) => {
 
 // Return all information for a fake person
 // (CPR, first name, last name, gender, date of birth, address, mobile phone number)
-app.get("/fake-person-information", (req, res) => {
-  fakePersonInformation();
-  res.json({ status: "ok" });
+app.get("/api/fake-person", (req, res) => {
+  const person = fakePerson();
+  res.json({
+    data: { person },
+  });
 });
 
 // Return fake person information in bulk (all information for 2 to 100 persons)

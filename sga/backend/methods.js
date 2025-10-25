@@ -3,6 +3,7 @@ import { db } from "./database.js";
 // Return a fake CPR
 export function fakeCpr() {
   console.log("fakeCpr()");
+
   const randomPerson = db.persons[Math.floor(Math.random() * db.persons.length)];
 
   return randomPerson.cpr;
@@ -11,6 +12,16 @@ export function fakeCpr() {
 // Return a fake first name, last name and gender
 export function fakeFirstNameLastNameGender() {
   console.log("fakeFirstNameLastNameGender()");
+
+  const randomPerson = db.persons[Math.floor(Math.random() * db.persons.length)];
+
+  const data = {
+    firstName: randomPerson.name,
+    lastName: randomPerson.surname,
+    gender: randomPerson.gender,
+  };
+
+  return data;
 }
 
 // Return a fake first name, last name, gender and date of birth
@@ -39,8 +50,12 @@ export function fakeMobilePhoneNumber() {
 
 // Return all information for a fake person
 // (CPR, first name, last name, gender, date of birth, address, mobile phone number)
-export function fakePersonInformation() {
-  console.log("fakePersonInformation()");
+export function fakePerson() {
+  console.log("fakePerson()");
+
+  const randomPerson = db.persons[Math.floor(Math.random() * db.persons.length)];
+
+  return randomPerson;
 }
 
 // Return fake person information in bulk (all information for 2 to 100 persons)
