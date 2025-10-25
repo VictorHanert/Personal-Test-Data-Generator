@@ -6,6 +6,8 @@ const PORT = 8080;
 const BACKEND_API = "http://localhost:3000/api/fake-cpr";
 
 app.get("/fake-cpr", async (req, res) => {
+  console.log("/fake-cpr");
+
   try {
     const resp = await fetch(BACKEND_API);
     const data = await resp.json();

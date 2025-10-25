@@ -15,6 +15,8 @@ const app = express();
 
 // Return a fake CPR
 app.get("/api/fake-cpr", (req, res) => {
+  console.log("/api/fake-cpr");
+
   fakeCpr();
   res.json({ status: "ok" });
 });
