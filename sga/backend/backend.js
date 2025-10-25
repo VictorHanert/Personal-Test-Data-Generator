@@ -52,9 +52,18 @@ app.get("/fake-cpr-first-name-last-name-gender", (req, res) => {
 });
 
 // Return a fake CPR, first name, last name, gender and date of birth
-app.get("/fake-cpr-first-name-last-name-gender-dob", (req, res) => {
-  fakeCprFirstNameLastNameGenderDob();
-  res.json({ status: "ok" });
+app.get("/api/fake-cpr-first-name-last-name-gender-dob", (req, res) => {
+  const data = fakeCprFirstNameLastNameGenderDob();
+
+  res.json({
+    data: {
+      cpr: data.cpr,
+      firstName: data.firstName,
+      lastname: data.lastname,
+      gender: data.gender,
+      dob: data.dob,
+    },
+  });
 });
 
 // Return a fake address

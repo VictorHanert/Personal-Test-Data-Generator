@@ -36,6 +36,18 @@ export function fakeCprFirstNameLastNameGender() {
 // Return a fake CPR, first name, last name, gender and date of birth
 export function fakeCprFirstNameLastNameGenderDob() {
   console.log("fakeCprFirstNameLastNameGenderDob()");
+
+  const randomPerson = db.persons[Math.floor(Math.random() * db.persons.length)];
+
+  const data = {
+    cpr: randomPerson.cpr,
+    firstName: randomPerson.name,
+    lastname: randomPerson.surname,
+    gender: randomPerson.gender,
+    dob: randomPerson.date_of_birth,
+  };
+
+  return data;
 }
 
 // Return a fake address
