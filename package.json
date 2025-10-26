@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "NODE_ENV=test jest --detectOpenHandles --runInBand"
+    "test": "NODE_ENV=test jest --detectOpenHandles --runInBand",
     "audit": "npm audit"
   },
   "repository": {
