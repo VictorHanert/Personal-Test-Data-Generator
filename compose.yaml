@@ -29,7 +29,7 @@ services:
       - app-network
     volumes:
       - ./api:/app
-    command: node index.js
+    command: npm run dev
 
 networks:
   app-network:

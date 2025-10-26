@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "test": "NODE_ENV=test jest --detectOpenHandles --runInBand",
+    "e2e": "npx playwright test",
+    "e2e-ui": "npx playwright test --ui",
+    "e2e-report": "npx playwright show-report",
     "audit": "npm audit"
   },
   "repository": {
