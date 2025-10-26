@@ -1,4 +1,4 @@
-import {jest} from '@jest/globals';
+import {expect, test} from '@jest/globals';
 
 import FakeInfo from '../FakeInfo.js';
 

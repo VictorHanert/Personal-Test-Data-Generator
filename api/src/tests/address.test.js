@@ -1,3 +1,5 @@
+import {expect, test, describe} from '@jest/globals';
+
 // @jest-environment node
 import FakeInfo from '../FakeInfo.js';
 
