@@ -10,7 +10,7 @@ export default class FakeInfo {
   static GENDER_FEMININE = "female";
   static GENDER_MASCULINE = "male";
 
-  static FILE_PERSON_NAMES = "data/person-names.json";
+  static FILE_PERSON_NAMES = "./data/person-names.json";
 
   static PHONE_PREFIXES = [
     "2", "30", "31", "40", "41", "42", "50", "51", "52", "53", "60", "61", "71", "81", "91", "92", "93", "342",
@@ -74,7 +74,7 @@ export default class FakeInfo {
   // Name & gender
   // -------------------------
   setFullNameAndGender() {
-    // Try to load data/person-names.json; expected shape:
+    // Try to load ./data/person-names.json; expected shape:
     // { "persons": [ { "firstName": "...", "lastName": "...", "gender": "female"|"male" }, ... ] }
     const filePath = path.resolve(process.cwd(), FakeInfo.FILE_PERSON_NAMES);
     let namesData = FakeInfo.loadJSONIfExists(filePath);
