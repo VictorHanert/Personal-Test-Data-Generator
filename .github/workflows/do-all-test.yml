@@ -21,6 +21,9 @@ jobs:
       - name: Install dependencies
         run: npm ci 
 
+      - name: install playwright
+        run: npx playwright install
+
       - name: Set up Docker Compose
         uses: docker/setup-compose-action@v1
 
