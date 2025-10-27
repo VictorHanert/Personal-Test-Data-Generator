@@ -1,0 +1,28 @@
+name: run all tests
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Run docker compose
+        # https://github.com/hoverkraft-tech/compose-action 
+        uses: hoverkraft-tech/compose-action@3846bcd61da338e9eaaf83e7ed0234a12b099b72 # v2.4.1
+        with:
+          compose-file: "./compose.yml"
+        env:
+          MYSQL_ROOT_PASSWORD: "ThisIsMyPassword"
+
+      - name: test e2e
+        run: npm run e2e
+
+      - name: run unit test on api
+        run: docker compose exec api-1 exec run test
+
+      - name: run lint on api
+        run: docker compose exec api-1 exec run lint
