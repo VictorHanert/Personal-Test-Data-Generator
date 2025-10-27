@@ -12,8 +12,6 @@ jobs:
       -
         name: Set up Docker Compose
         uses: docker/setup-compose-action@v1
-        with: 
-          version: lastest
 
       - name: test e2e
         run: npm run e2e
