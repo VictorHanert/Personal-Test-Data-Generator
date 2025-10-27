@@ -12,6 +12,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22  # or whatever version you use
+          cache: npm        # speeds up installs
+
       - name: Set up Docker Compose
         uses: docker/setup-compose-action@v1
 
