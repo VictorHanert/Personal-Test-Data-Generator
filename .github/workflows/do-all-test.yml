@@ -9,8 +9,10 @@ jobs:
   compose:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Set up Docker Compose
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Compose
         uses: docker/setup-compose-action@v1
 
       - name: test e2e
