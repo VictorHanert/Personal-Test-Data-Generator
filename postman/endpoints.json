@@ -1,295 +1,414 @@
 {
-	"info": {
-		"_postman_id": "",
-		"name": "test mandatory 1 - from repo",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": ""
-	},
-	"item": [
-		{
-			"name": "cpr",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/cpr",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"cpr"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "hello",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/hello",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"hello"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "name-gender",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/name-gender",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"name-gender"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "name-gender-dob",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/name-gender-dob",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"name-gender-dob"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "cpr-name-gender",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/cpr-name-gender",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"cpr-name-gender"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "cpr-name-gender-dob",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/cpr-name-gender-dob",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"cpr-name-gender-dob"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "address",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"// ------------ Body extraction ------------",
-							"const body = pm.response.json();",
-							"// Your API seems to return { address: { ... } }.",
-							"// Fall back to body itself if it's already flat:",
-							"const a = body.address ?? body;",
-							"",
-							"// Support snake_case OR camelCase for these two:",
-							"const postal = a.postal_code ?? a.postalCode;",
-							"const town   = a.town_name  ?? a.townName;",
-							"",
-							"// Quick sanity dump if something fails:",
-							"pm.test(\"Has address object/fields\", () => {",
-							"  pm.expect(a).to.be.an(\"object\");",
-							"});",
-							"",
-							"// ------------ Required fields ------------",
-							"pm.test(\"Has required keys (allow snake or camel for postal/town)\", () => {",
-							"  pm.expect(a).to.have.property(\"street\");",
-							"  pm.expect(a).to.have.property(\"number\");",
-							"  pm.expect(a).to.have.property(\"floor\");",
-							"  pm.expect(a).to.have.property(\"door\");",
-							"  pm.expect(postal, \"postal_code/postalCode missing\").to.exist;",
-							"  pm.expect(town, \"town_name/townName missing\").to.exist;",
-							"});",
-							"",
-							"// ------------ Rules / patterns ------------",
-							"pm.test(\"street 2–47 chars (letters/æøå + space/.-')\", () => {",
-							"  pm.expect(a.street).to.be.a(\"string\");",
-							"  pm.expect(a.street.length).to.be.within(2, 47);",
-							"  pm.expect(a.street).to.match(/^[A-Za-zÆØÅæøå .'-]{2,47}$/);",
-							"});",
-							"",
-							"pm.test(\"number: 1–999 + optional A–Z\", () => {",
-							"  pm.expect(a.number).to.be.a(\"string\");",
-							"  pm.expect(a.number).to.match(/^([1-9]\\d{0,2})([A-Z])?$/);",
-							"  // If you enforce no I/J/O/Q, use this stricter line instead:",
-							"  // pm.expect(a.number).to.match(/^([1-9]\\d{0,2})([A-HKLMNPRSTUVWXYZ])?$/);",
-							"});",
-							"",
-							"pm.test('floor: \"st\" or 1–99', () => {",
-							"  pm.expect(String(a.floor)).to.match(/^(st|[1-9]\\d?)$/);",
-							"});",
-							"",
-							"pm.test(\"door: th/tv/mf OR 1–50 OR [a-z]-?\\\\d{1,3}\", () => {",
-							"  pm.expect(String(a.door)).to.match(/^(th|tv|mf|([1-9]|[1-4]\\d|50)|[a-z]-?\\d{1,3})$/);",
-							"});",
-							"",
-							"pm.test(\"postal_code: exactly 4 digits\", () => {",
-							"  pm.expect(String(postal)).to.match(/^\\d{4}$/);",
-							"});",
-							"",
-							"pm.test(\"town_name: letters + spaces (æøå allowed)\", () => {",
-							"  pm.expect(town).to.be.a(\"string\");",
-							"  pm.expect(town).to.match(/^[A-Za-zÆØÅæøå ]+$/);",
-							"});",
-							"",
-							"",
-							"// ---------- Randomness sanity: N extra GETs ----------",
-							"const url = pm.request.url.toString();",
-							"const RUNS = 8; // tweak as needed",
-							"let valid = 0;",
-							"let seen = new Set();",
-							"",
-							"function normalize(x) {",
-							"  const a = x.address ?? x;",
-							"  return {",
-							"    street: a.street,",
-							"    number: a.number,",
-							"    floor:  String(a.floor),",
-							"    door:   String(a.door),",
-							"    postal: String(a.postal_code ?? a.postalCode),",
-							"    town:   a.town_name ?? a.townName,",
-							"  };",
-							"}",
-							"",
-							"function checkContract(obj) {",
-							"  // Minimal contract checks (same rules as main tests)",
-							"  pm.expect(obj.street).to.be.a(\"string\");",
-							"  pm.expect(obj.street.length).to.be.within(2, 47);",
-							"  pm.expect(obj.street).to.match(/^[A-Za-zÆØÅæøå .'-]{2,47}$/);",
-							"",
-							"  pm.expect(obj.number).to.match(/^([1-9]\\d{0,2})([A-Z])?$/);",
-							"  // If you disallow I/J/O/Q, use this instead:",
-							"  // pm.expect(obj.number).to.match(/^([1-9]\\d{0,2})([A-HKLMNPRSTUVWXYZ])?$/);",
-							"",
-							"  pm.expect(obj.floor).to.match(/^(st|[1-9]\\d?)$/);",
-							"  pm.expect(obj.door).to.match(/^(th|tv|mf|([1-9]|[1-4]\\d|50)|[a-z]-?\\d{1,3})$/);",
-							"  pm.expect(obj.postal).to.match(/^\\d{4}$/);",
-							"  pm.expect(obj.town).to.be.a(\"string\");",
-							"  pm.expect(obj.town).to.match(/^[A-Za-zÆØÅæøå ]+$/);",
-							"}",
-							"",
-							"function checkOne(done) {",
-							"  pm.sendRequest({ url, method: \"GET\", header: { Accept: \"application/json\" }}, (err, res) => {",
-							"    pm.expect(err).to.be.null;",
-							"    pm.expect(res).to.have.property(\"code\", 200);",
-							"",
-							"    const raw = res.json();",
-							"    const obj = normalize(raw);",
-							"",
-							"    checkContract(obj);",
-							"",
-							"    // Diversity check",
-							"    seen.add([obj.street, obj.number, obj.floor, obj.door, obj.postal, obj.town].join(\"|\"));",
-							"    valid++;",
-							"    done();",
-							"  });",
-							"}",
-							"",
-							"pm.test(`Randomness: ${RUNS} calls stay valid`, (done) => {",
-							"  let pending = RUNS;",
-							"  for (let i = 0; i < RUNS; i++) {",
-							"    checkOne(() => { if (--pending === 0) { pm.expect(valid).to.eql(RUNS); done(); } });",
-							"  }",
-							"});",
-							"",
-							"pm.test(\"Randomness: at least 2 distinct addresses observed\", () => {",
-							"  pm.expect(seen.size).to.be.above(1);",
-							"});",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/address",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"address"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "person",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/person",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"person"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "phone",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/phone",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"phone"
-					]
-				}
-			},
-			"response": []
-		}
-	]
+  "info": {
+    "_postman_id": "",
+    "name": "test mandatory 1 - from repo",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": ""
+  },
+  "item": [
+    {
+      "name": "cpr",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/cpr",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "cpr"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "hello",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/hello",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "hello"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "name-gender",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/name-gender",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "name-gender"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "name-gender-dob",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", () => {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response is valid JSON\", () => {",
+              "    pm.response.to.be.withBody;",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "pm.test(\"Response time is under 200ms\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(200);",
+              "});",
+              "",
+              "const jsonData = pm.response.json();",
+              "",
+              "pm.test(\"Response contains all expected keys\", () => {",
+              "    pm.expect(jsonData).to.have.keys([\"firstName\", \"lastName\", \"gender\", \"birthDate\"]);",
+              "});",
+              "",
+              "pm.test(\"Data types are correct\", () => {",
+              "    pm.expect(jsonData.firstName).to.be.a(\"string\");",
+              "    pm.expect(jsonData.lastName).to.be.a(\"string\");",
+              "    pm.expect(jsonData.gender).to.be.a(\"string\");",
+              "    pm.expect(jsonData.birthDate).to.be.a(\"string\");",
+              "});",
+              "",
+              "",
+              "pm.test(\"Gender is either male or female\", () => {",
+              "    pm.expect([\"male\", \"female\"]).to.include(jsonData.gender);",
+              "});",
+              "",
+              "pm.test(\"birthDate is valid and realistic\", () => {",
+              "    const regex = /^\\d{4}-\\d{2}-\\d{2}$/;",
+              "    pm.expect(jsonData.birthDate).to.match(regex);",
+              "    const date = new Date(jsonData.birthDate);",
+              "    const now = new Date();",
+              "    pm.expect(date.getFullYear()).to.be.above(1900);",
+              "    pm.expect(date.getTime()).to.be.below(now.getTime());",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/name-gender-dob",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "name-gender-dob"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "cpr-name-gender",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", () => {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response is valid JSON\", () => {",
+              "    pm.response.to.be.withBody;",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "pm.test(\"Response time is under 200ms\", () => {",
+              "    pm.expect(pm.response.responseTime).to.be.below(200);",
+              "});",
+              "",
+              "const jsonData = pm.response.json();",
+              "",
+              "pm.test(\"Response contains all expected keys\", () => {",
+              "    pm.expect(jsonData).to.have.keys([\"CPR\", \"firstName\", \"lastName\", \"gender\"]);",
+              "});",
+              "",
+              "pm.test(\"Field types are correct\", () => {",
+              "    pm.expect(jsonData.CPR).to.be.a(\"string\");",
+              "    pm.expect(jsonData.firstName).to.be.a(\"string\");",
+              "    pm.expect(jsonData.lastName).to.be.a(\"string\");",
+              "    pm.expect(jsonData.gender).to.be.a(\"string\");",
+              "});",
+              "",
+              "pm.test(\"CPR has correct format (10 digits)\", () => {",
+              "    pm.expect(jsonData.CPR).to.match(/^\\d{10}$/);",
+              "});",
+              "",
+              "",
+              "pm.test(\"Gender is either male or female\", () => {",
+              "    pm.expect([\"male\", \"female\"]).to.include(jsonData.gender);",
+              "});",
+              "",
+              "pm.test(\"CPR last digit matches gender rule\", () => {",
+              "    const lastDigit = parseInt(jsonData.CPR.slice(-1));",
+              "    if (jsonData.gender === \"female\") {",
+              "        pm.expect(lastDigit % 2).to.eql(0, \"Female CPR should end with even digit\");",
+              "    } else if (jsonData.gender === \"male\") {",
+              "        pm.expect(lastDigit % 2).to.eql(1, \"Male CPR should end with odd digit\");",
+              "    }",
+              "});",
+              "",
+              "pm.environment.set(\"CPR\", jsonData.CPR);",
+              "pm.environment.set(\"firstName\", jsonData.firstName);",
+              "pm.environment.set(\"lastName\", jsonData.lastName);",
+              "pm.environment.set(\"gender\", jsonData.gender);"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/cpr-name-gender",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "cpr-name-gender"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "cpr-name-gender-dob",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/cpr-name-gender-dob",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "cpr-name-gender-dob"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "address",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// ------------ Body extraction ------------",
+              "const body = pm.response.json();",
+              "// Your API seems to return { address: { ... } }.",
+              "// Fall back to body itself if it's already flat:",
+              "const a = body.address ?? body;",
+              "",
+              "// Support snake_case OR camelCase for these two:",
+              "const postal = a.postal_code ?? a.postalCode;",
+              "const town   = a.town_name  ?? a.townName;",
+              "",
+              "// Quick sanity dump if something fails:",
+              "pm.test(\"Has address object/fields\", () => {",
+              "  pm.expect(a).to.be.an(\"object\");",
+              "});",
+              "",
+              "// ------------ Required fields ------------",
+              "pm.test(\"Has required keys (allow snake or camel for postal/town)\", () => {",
+              "  pm.expect(a).to.have.property(\"street\");",
+              "  pm.expect(a).to.have.property(\"number\");",
+              "  pm.expect(a).to.have.property(\"floor\");",
+              "  pm.expect(a).to.have.property(\"door\");",
+              "  pm.expect(postal, \"postal_code/postalCode missing\").to.exist;",
+              "  pm.expect(town, \"town_name/townName missing\").to.exist;",
+              "});",
+              "",
+              "// ------------ Rules / patterns ------------",
+              "pm.test(\"street 2–47 chars (letters/æøå + space/.-')\", () => {",
+              "  pm.expect(a.street).to.be.a(\"string\");",
+              "  pm.expect(a.street.length).to.be.within(2, 47);",
+              "  pm.expect(a.street).to.match(/^[A-Za-zÆØÅæøå .'-]{2,47}$/);",
+              "});",
+              "",
+              "pm.test(\"number: 1–999 + optional A–Z\", () => {",
+              "  pm.expect(a.number).to.be.a(\"string\");",
+              "  pm.expect(a.number).to.match(/^([1-9]\\d{0,2})([A-Z])?$/);",
+              "  // If you enforce no I/J/O/Q, use this stricter line instead:",
+              "  // pm.expect(a.number).to.match(/^([1-9]\\d{0,2})([A-HKLMNPRSTUVWXYZ])?$/);",
+              "});",
+              "",
+              "pm.test('floor: \"st\" or 1–99', () => {",
+              "  pm.expect(String(a.floor)).to.match(/^(st|[1-9]\\d?)$/);",
+              "});",
+              "",
+              "pm.test(\"door: th/tv/mf OR 1–50 OR [a-z]-?\\\\d{1,3}\", () => {",
+              "  pm.expect(String(a.door)).to.match(/^(th|tv|mf|([1-9]|[1-4]\\d|50)|[a-z]-?\\d{1,3})$/);",
+              "});",
+              "",
+              "pm.test(\"postal_code: exactly 4 digits\", () => {",
+              "  pm.expect(String(postal)).to.match(/^\\d{4}$/);",
+              "});",
+              "",
+              "pm.test(\"town_name: letters + spaces (æøå allowed)\", () => {",
+              "  pm.expect(town).to.be.a(\"string\");",
+              "  pm.expect(town).to.match(/^[A-Za-zÆØÅæøå ]+$/);",
+              "});",
+              "",
+              "",
+              "// ---------- Randomness sanity: N extra GETs ----------",
+              "const url = pm.request.url.toString();",
+              "const RUNS = 8; // tweak as needed",
+              "let valid = 0;",
+              "let seen = new Set();",
+              "",
+              "function normalize(x) {",
+              "  const a = x.address ?? x;",
+              "  return {",
+              "    street: a.street,",
+              "    number: a.number,",
+              "    floor:  String(a.floor),",
+              "    door:   String(a.door),",
+              "    postal: String(a.postal_code ?? a.postalCode),",
+              "    town:   a.town_name ?? a.townName,",
+              "  };",
+              "}",
+              "",
+              "function checkContract(obj) {",
+              "  // Minimal contract checks (same rules as main tests)",
+              "  pm.expect(obj.street).to.be.a(\"string\");",
+              "  pm.expect(obj.street.length).to.be.within(2, 47);",
+              "  pm.expect(obj.street).to.match(/^[A-Za-zÆØÅæøå .'-]{2,47}$/);",
+              "",
+              "  pm.expect(obj.number).to.match(/^([1-9]\\d{0,2})([A-Z])?$/);",
+              "  // If you disallow I/J/O/Q, use this instead:",
+              "  // pm.expect(obj.number).to.match(/^([1-9]\\d{0,2})([A-HKLMNPRSTUVWXYZ])?$/);",
+              "",
+              "  pm.expect(obj.floor).to.match(/^(st|[1-9]\\d?)$/);",
+              "  pm.expect(obj.door).to.match(/^(th|tv|mf|([1-9]|[1-4]\\d|50)|[a-z]-?\\d{1,3})$/);",
+              "  pm.expect(obj.postal).to.match(/^\\d{4}$/);",
+              "  pm.expect(obj.town).to.be.a(\"string\");",
+              "  pm.expect(obj.town).to.match(/^[A-Za-zÆØÅæøå ]+$/);",
+              "}",
+              "",
+              "function checkOne(done) {",
+              "  pm.sendRequest({ url, method: \"GET\", header: { Accept: \"application/json\" }}, (err, res) => {",
+              "    pm.expect(err).to.be.null;",
+              "    pm.expect(res).to.have.property(\"code\", 200);",
+              "",
+              "    const raw = res.json();",
+              "    const obj = normalize(raw);",
+              "",
+              "    checkContract(obj);",
+              "",
+              "    // Diversity check",
+              "    seen.add([obj.street, obj.number, obj.floor, obj.door, obj.postal, obj.town].join(\"|\"));",
+              "    valid++;",
+              "    done();",
+              "  });",
+              "}",
+              "",
+              "pm.test(`Randomness: ${RUNS} calls stay valid`, (done) => {",
+              "  let pending = RUNS;",
+              "  for (let i = 0; i < RUNS; i++) {",
+              "    checkOne(() => { if (--pending === 0) { pm.expect(valid).to.eql(RUNS); done(); } });",
+              "  }",
+              "});",
+              "",
+              "pm.test(\"Randomness: at least 2 distinct addresses observed\", () => {",
+              "  pm.expect(seen.size).to.be.above(1);",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/address",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "address"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "person",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/person",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "person"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "phone",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/phone",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "phone"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
 }

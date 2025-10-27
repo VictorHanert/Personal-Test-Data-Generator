@@ -111,6 +111,18 @@ app.get("/validate-phone", (req, res) => {
   return res.status(200).json({ ok: true, phone });
 });
 
+app.get("/cpr-name-gender", (req, res) => {
+  const fi = new FakeInfo();
+  const { firstName, lastName, gender, CPR } = fi.getFakePerson();
+  res.json({ CPR, firstName, lastName, gender });
+});
+
+app.get("/name-gender-dob", (req, res) => {
+  const fi = new FakeInfo();
+  const { firstName, lastName, gender, birthDate } = fi.getFakePerson();
+  res.json({ firstName, lastName, gender, birthDate });
+});
+
 app.listen(port, () => {
   console.log(`API listening on port ${port}`);
 });
